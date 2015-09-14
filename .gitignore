@@ -1,0 +1,18 @@
+#OS files
+[Tt]humbs.db
+*.DS_Store
+
+
+#visual studio user files]
+.vs/
+*csproj.user
+*.suo
+
+
+#compiled files
+bin/
+.obj/
+
+
+#version file
+AssemblyVersion.cs

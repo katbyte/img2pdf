@@ -1,0 +1,41 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "katbyte.dll", "references\katbyte.dll\katbyte.dll.csproj", "{2A6B6174-0707-1987-0707-627974650000}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "img2pdf", "img2pdf.csproj", "{2A6B6174-7777-1987-7777-627974650001}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2A6B6174-0707-1987-0707-627974650000} = {2A6B6174-0707-1987-0707-627974650000}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		3.5.debug|Any CPU = 3.5.debug|Any CPU
+		3.5.release|Any CPU = 3.5.release|Any CPU
+		4.5.debug|Any CPU = 4.5.debug|Any CPU
+		4.5.release|Any CPU = 4.5.release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2A6B6174-0707-1987-0707-627974650000}.3.5.debug|Any CPU.ActiveCfg = 3.5.debug|Any CPU
+		{2A6B6174-0707-1987-0707-627974650000}.3.5.debug|Any CPU.Build.0 = 3.5.debug|Any CPU
+		{2A6B6174-0707-1987-0707-627974650000}.3.5.release|Any CPU.ActiveCfg = 3.5.release|Any CPU
+		{2A6B6174-0707-1987-0707-627974650000}.3.5.release|Any CPU.Build.0 = 3.5.release|Any CPU
+		{2A6B6174-0707-1987-0707-627974650000}.4.5.debug|Any CPU.ActiveCfg = 4.5.debug|Any CPU
+		{2A6B6174-0707-1987-0707-627974650000}.4.5.debug|Any CPU.Build.0 = 4.5.debug|Any CPU
+		{2A6B6174-0707-1987-0707-627974650000}.4.5.release|Any CPU.ActiveCfg = 4.5.release|Any CPU
+		{2A6B6174-0707-1987-0707-627974650000}.4.5.release|Any CPU.Build.0 = 4.5.release|Any CPU
+		{2A6B6174-7777-1987-7777-627974650001}.3.5.debug|Any CPU.ActiveCfg = 3.5.debug|Any CPU
+		{2A6B6174-7777-1987-7777-627974650001}.3.5.debug|Any CPU.Build.0 = 3.5.debug|Any CPU
+		{2A6B6174-7777-1987-7777-627974650001}.3.5.release|Any CPU.ActiveCfg = 3.5.release|Any CPU
+		{2A6B6174-7777-1987-7777-627974650001}.3.5.release|Any CPU.Build.0 = 3.5.release|Any CPU
+		{2A6B6174-7777-1987-7777-627974650001}.4.5.debug|Any CPU.ActiveCfg = 4.5.debug|Any CPU
+		{2A6B6174-7777-1987-7777-627974650001}.4.5.debug|Any CPU.Build.0 = 4.5.debug|Any CPU
+		{2A6B6174-7777-1987-7777-627974650001}.4.5.release|Any CPU.ActiveCfg = 4.5.release|Any CPU
+		{2A6B6174-7777-1987-7777-627974650001}.4.5.release|Any CPU.Build.0 = 4.5.release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

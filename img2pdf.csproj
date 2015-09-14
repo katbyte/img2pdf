@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright © 2014 kt@katbyte.me -->
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- This section must be before the katbyte.targets import -->
+  <PropertyGroup>
+    <ProjectGuid>{2A6B6174-7777-1987-7777-627974650001}</ProjectGuid>
+    <RootNamespace>katbyte.img2pdf</RootNamespace>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>img2pdf</AssemblyName>
+  </PropertyGroup>
+  <!-- import default build configurations and properties -->
+  <Import Project=".build\katbyte.properties" />
+  <!-- project contents -->
+  <ItemGroup>
+    <Reference Include="itextsharp">
+      <HintPath>references\itextsharp\itextsharp.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="code\Program.Help.cs" />
+    <Compile Include="code\Program.cs" />
+    <Compile Include="properties\AssemblyInfo.cs" />
+    <Compile Include="properties\AssemblyVersion.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include=".version" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="references\katbyte.dll\katbyte.dll.csproj">
+      <Project>{2A6B6174-0707-1987-0707-627974650000}</Project>
+      <Name>katbyte.dll</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <!-- default c# targets -->
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- additional tasks go below here -->
+  <Import Project=".build\katbyte.targets.versioning" />
+</Project>
