@@ -5,13 +5,15 @@ using katbyte.console;
 
 namespace katbyte.img2pdf {
 
-    sealed partial class Program : KonsoleProgram {
+    sealed partial class Img2Pdf : KonsoleProgram {
 
-        /// <summary>
-        /// help text shown when there are no arguments
-        /// </summary>
-        static string noargs =
-@"
+        public static class Help {
+
+            /// <summary>
+            /// help text shown when there are no arguments
+            /// </summary>
+            public static string basic =
+            @"
 img2pdf: missing input folder[s]
 usage:
     img2pdf [OPTION] folder1 folder2 ...
@@ -22,14 +24,14 @@ usage:
 try 'img2pdf --help' or 'img2pdf -h' for more options.";
 
 
-        /// <summary>
-        /// help text shown for -h
-        /// </summary>
-        /// <remarks>
-        /// {0} is replaced with the current version
-        /// </remarks>
-        private static string help =
-@"
+            /// <summary>
+            /// help text shown for -h
+            /// </summary>
+            /// <remarks>
+            /// {0} is replaced with the current version
+            /// </remarks>
+            public static string full =
+            @"
 img2pdf {0}, creates a pdf from all images found in folders & subfolders with minimal formatting
 Copyright (c) 2014 kt@katbyte.me @ " + homepage + @"
 
@@ -51,6 +53,8 @@ options:
     -s          limits page size to the smallest image and shrink all larger images (proportions constrained)
     -l          limits page size to the largest  image and place  all smaller images in the middle
 ";
+
+        }
 
     }
 }

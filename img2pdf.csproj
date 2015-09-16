@@ -8,6 +8,9 @@
     <OutputType>Exe</OutputType>
     <AssemblyName>img2pdf</AssemblyName>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>katbyte.img2pdf.Img2Pdf</StartupObject>
+  </PropertyGroup>
   <!-- import default build configurations and properties -->
   <Import Project=".build\katbyte.properties" />
   <!-- project contents -->
@@ -19,13 +22,14 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="code\Program.Help.cs" />
-    <Compile Include="code\Program.cs" />
+    <Compile Include="code\Img2Pdf.Help.cs" />
+    <Compile Include="code\Img2Pdf.cs" />
     <Compile Include="properties\AssemblyInfo.cs" />
     <Compile Include="properties\AssemblyVersion.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".version" />
+    <None Include="properties\App.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="references\katbyte.dll\katbyte.dll.csproj">
@@ -37,4 +41,5 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- additional tasks go below here -->
   <Import Project=".build\katbyte.targets.versioning" />
+  <Import Project=".build\katbyte.targets.use.lib" />
 </Project>

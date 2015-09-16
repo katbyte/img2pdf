@@ -36,7 +36,7 @@ using katbyte.utility;
 
 namespace katbyte.img2pdf {
 
-    sealed partial class Program : KonsoleProgram {
+    sealed partial class Img2Pdf : KonsoleProgram {
 
     //constants
         private static string appname  = "img2pdf";
@@ -50,39 +50,153 @@ namespace katbyte.img2pdf {
 
         //program entry point, create new program and start
         static void Main(string[] args) {
-            new Program().Start(args);
+            new Img2Pdf().Start(args);
         }
+
+
+
+    //program options/cfg
+
+        //private fields for simplicity, revisit
+
+        private string[] inputs = new string[0];
+
+        private string output;
+        private string curpath = Directory.GetCurrentDirectory() + "\\";
+
+        //switches
+        private bool ensmallen;
+        private bool embiggen;
+
+        //keep track of if files/folders are found to determine "mode"
+        private bool inputFolders;
+        private bool inputFiles;
+
 
 
 
     //program
         public override int Code(string[] args) {
 
-            //TODO move argument/switch parsing out of here
-            //ParseArguments(args)
-            //.switchs object of some type
-            //use a library?
 
-
-        //parse arguments
-            //if no args output short help
-            if (args.Length == 0) {
-                Konsole.WriteLine(CC.WHITE, noargs);
+            //returns true if we should quit
+            if (ParseArguments(args)) {
+                return 0;
             }
 
 
-            //input
-            var inputsList    = new List<string>();
-            string output  = null;
-            string curpath = Directory.GetCurrentDirectory() + "\\";
+        //the magic
 
-            //switches
-            bool ensmallen = false;
-            bool embiggen  = false;
+            //multiple folders to pdfs (can assume every input is a folder)
+            if (output == null && ! inputs.IsEmpty()) {
 
-            //keep track of if files/folders are found to determine "mode"
-            bool inputFolders = false;
-            bool inputFiles = false;
+                //display whats going on
+                Konsole.Write(CT.N("creating individual PDFs for: ", CC.WHITE));
+                foreach (var i in inputs) {
+                    Konsole.Write(CT.N(Path.GetFileName(i), CC.MAGENTA), CT.N(", ", CC.GRAY));
+                }
+                Konsole.WriteLine();
+                Konsole.WriteLine();
+
+                //pdf each folder
+                foreach (var i in inputs) {
+                    var pdf = i + ".pdf";
+                    Konsole.WriteLine(
+                        CT.N(Path.GetDirectoryName(i)+"\\", CC.GRAY),
+                        CT.N(Path.GetFileName(i), CC.WHITE),
+                        CT.N(" ==> ", CC.CYAN),
+                        CT.N(Path.GetDirectoryName(pdf)+"\\", CC.GRAY),
+                        CT.N(Path.GetFileName(pdf), CC.WHITE)
+                    );
+
+                    Document doc = NewPdf(i + ".pdf");
+
+                    foreach (string file in Directory.GetFiles(i, "*", SearchOption.AllDirectories)) {
+                        var r = AddImage(doc, file);
+                        //todo cleanup doc.ConsoleAddImage(file, curpath); or something
+                        if (r != null) {
+                            PrintWarning(r);
+                        } else {
+                            PrintAdd(file, curpath);
+                        }
+                    }
+
+                    doc.Close();
+                    Konsole.WriteLine(CT.N("    finished!", CC.GREEN));
+                }
+
+            //all inputs to a single pdf
+            } else if (! inputs.IsEmpty()) {
+
+                //display whats going on
+                Konsole.Write(
+                    CT.N("creating ", CC.GRAY),
+                    CT.N(output, CC.CYAN),
+                    CT.N(" for: ", CC.GRAY));
+                foreach (var i in inputs) {
+                    Konsole.Write(CT.N(i, CC.MAGENTA), CT.N(", ", CC.GRAY));
+                }
+                Konsole.WriteLine();
+
+
+                Document doc = NewPdf(output);
+
+
+                foreach (var i in inputs) {
+                    if (Directory.Exists(i)) {
+                        foreach (string file in Directory.GetFiles(i, "*", SearchOption.AllDirectories)) {
+                            var r = AddImage(doc, file);
+                             //todo cleanup doc.ConsoleAddImage(file, curpath); or something
+                            if (r != null) {
+                                PrintWarning(r);
+                            } else {
+                                PrintAdd(file, curpath);
+                            }
+                        }
+                    } else {
+                        var r = AddImage(doc, i);
+                        //todo cleanup doc.ConsoleAddImage(file, curpath); or something
+                        if (r != null) {
+                            PrintWarning(r);
+                        } else {
+                            PrintAdd(i, curpath);
+                        }
+                    }
+                }
+
+                doc.Close();
+                Konsole.WriteLine(CT.N("    finished!", CC.GREEN));
+
+            //read files and folders from stdin
+            } else {
+                throw new NotImplementedException("todo: steam input");
+            }
+
+            return 0;
+        }
+
+
+
+
+    //arguments
+        /// <summary>
+        /// parses all arguments and configures the program, returns true if we should exit
+        /// </summary>
+        /// <returns>
+        /// true if help or version or no args were specified and we should exit
+        /// </returns>
+        public bool ParseArguments(string[] args) {
+
+             //if no args output short help
+            if (args.Length == 0) {
+                Konsole.WriteLine(CC.WHITE, Help.basic);
+                return true;
+            }
+
+
+            //temp list to collect inputs
+            var inputsList = new List<string>();
+
 
 
             //parse command line
@@ -114,12 +228,12 @@ namespace katbyte.img2pdf {
                                 //TODO add some color
                                 Konsole.WriteLine(CC.WHITE, appname + ".exe " + vinfo);
                                 Konsole.WriteLine(CC.WHITE, "Copyright (c) 2014 kt@katbyte.me @ " + homepage);
-                                return 0;
+                                return true;
 
                             case 'h':
                                 var v = FileVersionInfo.GetVersionInfo(Assembly.GetEntryAssembly().Location).FileVersion;
-                                Konsole.WriteLine(CC.GRAY, help.FormatIt(v));
-                                return 0;
+                                Konsole.WriteLine(CC.GRAY, Help.full.FormatIt(v));
+                                return true;
 
                             case 'o':
                                 if (i != carray.Length - 1) {
@@ -164,7 +278,6 @@ namespace katbyte.img2pdf {
             var inputs = inputsList.Distinct(StringComparer.OrdinalIgnoreCase).ToArray();
 
 
-
         //check sanity
 
             //can't do both... or can we ;)
@@ -197,96 +310,7 @@ namespace katbyte.img2pdf {
                 }
             }
 
-
-
-        //the magic
-
-            //multiple folders to pdfs (can assume every input is a folder)
-            if (output == null && ! inputs.IsEmpty()) {
-
-                //display whats going on
-                Konsole.Write(CT.N("creating individual PDFs for: ", CC.WHITE));
-                foreach (var i in inputs) {
-                    Konsole.Write(CT.N(Path.GetFileName(i), CC.MAGENTA), CT.N(", ", CC.GRAY));
-                }
-                Konsole.WriteLine();
-                Konsole.WriteLine();
-
-                //pdf each folder
-                foreach (var i in inputs) {
-                    var pdf = i + ".pdf";
-                    Konsole.WriteLine(
-                        CT.N(Path.GetDirectoryName(i)+"\\", CC.GRAY),
-                        CT.N(Path.GetFileName(i), CC.WHITE),
-                        CT.N(" ==> ", CC.CYAN),
-                        CT.N(Path.GetDirectoryName(pdf)+"\\", CC.GRAY),
-                        CT.N(Path.GetFileName(pdf), CC.WHITE)
-                    );
-
-                    Document doc = NewPdf(i + ".pdf");
-
-                    foreach (string file in Directory.GetFiles(i, "*", SearchOption.AllDirectories)) {
-                        var r = AddImage(doc, file);
-                        //todo cleanup doc.ConsoleAddImage(file, curpath); or something
-                        if (r != null) {
-                            PrintWarning(r);
-                        } else {
-                            PrintAdd(file, curpath);
-                        }
-                    }
-
-                    doc.Close();
-                    Konsole.Write(CT.N("    finished!", CC.GREEN));
-                }
-
-            //all inputs to a single pdf
-            } else if (! inputs.IsEmpty()) {
-
-                //display whats going on
-                Konsole.Write(
-                    CT.N("creating ", CC.GRAY),
-                    CT.N(output, CC.CYAN),
-                    CT.N(" for: ", CC.GRAY));
-                foreach (var i in inputs) {
-                    Konsole.Write(CT.N(i, CC.MAGENTA), CT.N(", ", CC.GRAY));
-                }
-                Konsole.WriteLine();
-
-
-                Document doc = NewPdf(output);
-
-
-                foreach (var i in inputs) {
-                    if (Directory.Exists(i)) {
-                        foreach (string file in Directory.GetFiles(i, "*", SearchOption.AllDirectories)) {
-                            var r = AddImage(doc, file);
-                             //todo cleanup doc.ConsoleAddImage(file, curpath); or something
-                            if (r != null) {
-                                PrintWarning(r);
-                            } else {
-                                PrintAdd(file, curpath);
-                            }
-                        }
-                    } else {
-                        var r = AddImage(doc, i);
-                        //todo cleanup doc.ConsoleAddImage(file, curpath); or something
-                        if (r != null) {
-                            PrintWarning(r);
-                        } else {
-                            PrintAdd(i, curpath);
-                        }
-                    }
-                }
-
-                doc.Close();
-                Konsole.Write(CT.N("    finished!", CC.GREEN));
-
-            //read files and folders from stdin
-            } else {
-                throw new NotImplementedException("todo: steam input");
-            }
-
-            return 0;
+            return false;
         }
 
 

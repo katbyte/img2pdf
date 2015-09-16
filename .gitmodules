@@ -1,8 +1,8 @@
 [submodule ".build"]
 	path = .build
-	url = https://github.com/katbyte/cs.build
+	url = git@github.com:katbyte/cs.build
 	branch = master
 [submodule "references/katbyte.dll"]
 	path = references/katbyte.dll
-	url = https://github.com/katbyte/cs.dll.katbyte
+	url = git@github.com:katbyte/cs.dll.katbyte
 	branch = master
