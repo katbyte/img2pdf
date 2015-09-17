@@ -11,6 +11,7 @@ using iTextSharp.text.pdf;
 
 using katbyte.extend;
 using katbyte.console;
+using katbyte.data;
 using katbyte.utility;
 
 
@@ -21,10 +22,11 @@ using katbyte.utility;
 // - add some color to version
 // - better output for drag & drop
 // - more switchs
-//      - q for no output
-//      - c to check for existing pdfs
-//      - t to disable sub-folder file search
-//      - p save pdfs to this path
+//      - q no output
+//      - c check for existing pdfs
+//      - t disable sub-folder file search
+//      - save pdfs to this path
+//      - set page size
 // - md file & docs & comp (move this TODO there?)
 // - set page size and then fit images?
 // - winforms img2pdfDrop
@@ -59,10 +61,10 @@ namespace katbyte.img2pdf {
 
         //private fields for simplicity, revisit
 
-        private string[] inputs = new string[0];
+        private string[] paths = new string[0];
 
         private string output;
-        private string curpath = Directory.GetCurrentDirectory() + "\\";
+        private string basepath = Directory.GetCurrentDirectory() + "\\"; //should be root of where all imaged are added from
 
         //switches
         private bool ensmallen;
@@ -72,7 +74,7 @@ namespace katbyte.img2pdf {
         private bool inputFolders;
         private bool inputFiles;
 
-
+        //private KSize pageSize;
 
 
     //program
@@ -88,88 +90,56 @@ namespace katbyte.img2pdf {
         //the magic
 
             //multiple folders to pdfs (can assume every input is a folder)
-            if (output == null && ! inputs.IsEmpty()) {
+            if (output == null && ! paths.IsEmpty()) {
 
                 //display whats going on
                 Konsole.Write(CT.N("creating individual PDFs for: ", CC.WHITE));
-                foreach (var i in inputs) {
+                foreach (var i in paths) {
                     Konsole.Write(CT.N(Path.GetFileName(i), CC.MAGENTA), CT.N(", ", CC.GRAY));
                 }
                 Konsole.WriteLine();
                 Konsole.WriteLine();
 
+
                 //pdf each folder
-                foreach (var i in inputs) {
-                    var pdf = i + ".pdf";
+                foreach (var path in paths) {
+                    var pdf = path + ".pdf";
                     Konsole.WriteLine(
-                        CT.N(Path.GetDirectoryName(i)+"\\", CC.GRAY),
-                        CT.N(Path.GetFileName(i), CC.WHITE),
+                        CT.N(Path.GetDirectoryName(path)+"\\", CC.GRAY),
+                        CT.N(Path.GetFileName(path), CC.WHITE),
                         CT.N(" ==> ", CC.CYAN),
                         CT.N(Path.GetDirectoryName(pdf)+"\\", CC.GRAY),
                         CT.N(Path.GetFileName(pdf), CC.WHITE)
                     );
 
-                    Document doc = NewPdf(i + ".pdf");
-
-                    foreach (string file in Directory.GetFiles(i, "*", SearchOption.AllDirectories)) {
-                        var r = AddImage(doc, file);
-                        //todo cleanup doc.ConsoleAddImage(file, curpath); or something
-                        if (r != null) {
-                            PrintWarning(r);
-                        } else {
-                            PrintAdd(file, curpath);
-                        }
-                    }
-
-                    doc.Close();
+                    var files = KPath.GetAllFiles(paths);
+                    CreatePdfFromFiles(path + ".pdf", files, FileCallback);
                     Konsole.WriteLine(CT.N("    finished!", CC.GREEN));
+                    Konsole.WriteLine();
                 }
 
+
             //all inputs to a single pdf
-            } else if (! inputs.IsEmpty()) {
+            } else if (! paths.IsEmpty()) {
 
                 //display whats going on
                 Konsole.Write(
                     CT.N("creating ", CC.GRAY),
                     CT.N(output, CC.CYAN),
                     CT.N(" for: ", CC.GRAY));
-                foreach (var i in inputs) {
+                foreach (var i in paths) {
                     Konsole.Write(CT.N(i, CC.MAGENTA), CT.N(", ", CC.GRAY));
                 }
                 Konsole.WriteLine();
 
 
-                Document doc = NewPdf(output);
-
-
-                foreach (var i in inputs) {
-                    if (Directory.Exists(i)) {
-                        foreach (string file in Directory.GetFiles(i, "*", SearchOption.AllDirectories)) {
-                            var r = AddImage(doc, file);
-                             //todo cleanup doc.ConsoleAddImage(file, curpath); or something
-                            if (r != null) {
-                                PrintWarning(r);
-                            } else {
-                                PrintAdd(file, curpath);
-                            }
-                        }
-                    } else {
-                        var r = AddImage(doc, i);
-                        //todo cleanup doc.ConsoleAddImage(file, curpath); or something
-                        if (r != null) {
-                            PrintWarning(r);
-                        } else {
-                            PrintAdd(i, curpath);
-                        }
-                    }
-                }
-
-                doc.Close();
+                var files = KPath.GetAllFiles(paths);
+                CreatePdfFromFiles(output , files, FileCallback);
                 Konsole.WriteLine(CT.N("    finished!", CC.GREEN));
 
             //read files and folders from stdin
             } else {
-                throw new NotImplementedException("todo: steam input");
+                throw new NotImplementedException("todo: stream input");
             }
 
             return 0;
@@ -178,7 +148,7 @@ namespace katbyte.img2pdf {
 
 
 
-    //arguments
+    //parse arguments
         /// <summary>
         /// parses all arguments and configures the program, returns true if we should exit
         /// </summary>
@@ -259,6 +229,8 @@ namespace katbyte.img2pdf {
                                 throw new Exception("unknown switch '"+c+"'");
                         }
                     }
+
+                    continue;
                 }
 
 
@@ -275,7 +247,7 @@ namespace katbyte.img2pdf {
             }
 
             //remove duplicates and convert to array because why not
-            var inputs = inputsList.Distinct(StringComparer.OrdinalIgnoreCase).ToArray();
+            paths = inputsList.Distinct(StringComparer.OrdinalIgnoreCase).ToArray();
 
 
         //check sanity
@@ -287,15 +259,15 @@ namespace katbyte.img2pdf {
 
 
             //ensure we are configured for a single output when both files and folders are inputs
-            if (inputFiles && inputFolders) {
+            if ((inputFiles && inputFolders) || (inputFiles && ! inputFolders)) {
                 if (output == null) {
 
                     //if they all are in the same directory use that
 
                     //quick hack to grab the first n chars that are the same over all inputs
                     //TODO HACKALERT optimize/google a better solution
-                    string start = "" + inputs[0][0];
-                    for (int i = 0; i < inputs[0].Length && inputs.Any(input => input.StartsWith(start)); start = inputs[0].Substring(0, ++i)) {}
+                    string start = "" + paths[0][0];
+                    for (int i = 0; i < paths[0].Length && paths.Any(input => input.StartsWith(start)); start = paths[0].Substring(0, ++i)) {}
 
                     //TODO HACKALERT this does have the possibility to place the pdf in strange places
                     //maybe force the user to pick a location instead of trying to be smart?
@@ -305,7 +277,7 @@ namespace katbyte.img2pdf {
                     }
 
                     output = dir + "\\" + Path.GetFileName(dir) + ".pdf";
-                    Konsole.WriteLine(CT.N("WARNING: ", CC.YELLOW), CT.N("found both file and folder inputs without an output pdf file specified, using '" + output + "'", CC.GREEN));
+                    Konsole.WriteLine(CT.N("WARNING: ", CC.YELLOW), CT.N("found only files or both file and folder inputs without an output pdf file specified, using '" + output + "'", CC.GREEN));
                     Konsole.WriteLine();
                 }
             }
@@ -315,11 +287,18 @@ namespace katbyte.img2pdf {
 
 
 
-    //pdf helpers
+    //pdf
+
         /// <summary>
-        /// generates a new PDF document and opens it for writing, don't forget to close!
+        /// creates a PDF at path for the given files, for each file callback(success, file, message, Image) will be called
         /// </summary>
-        private static Document NewPdf(string path) {
+        public void CreatePdfFromFiles(string path, IEnumerable<string> files, Action<bool, string, string, Image> callback = null) {
+
+            //if no callback use an empty one
+            callback = callback ?? ((b,s1,s2,i) => {  });
+
+
+            //create document and open
             Document doc = new Document();
             doc.SetMargins(0, 0, 0, 0);
 
@@ -327,56 +306,82 @@ namespace katbyte.img2pdf {
             //writer.SetPdfVersion(PdfWriter.VERSION_1_7);
             writer.SetFullCompression();
 
-
             doc.Open();
 
-            //configure doc
+
+            //set some metadata
             doc.AddTitle(Path.GetFileName(path).RemoveFromEnd(".pdf"));
             doc.AddCreationDate();
             doc.AddCreator("created by " + appname + " @ " + homepage);
 
-            return doc;
 
-        }
+            //calculate page size if desired
+            KSize psize = new KSize();
+            if (ensmallen || embiggen) {
 
+                var e = KPath.GetAllFiles(paths).Select(file => {
+                    var i = Image.GetInstance(new Uri(file));
+                    return new KSize((int) i.Width, (int) i.Height);
+                });
 
-        /// <summary>
-        /// adds an image to the document, returns null for success, error message for error
-        /// </summary>
-        private static string AddImage(Document doc, string path) {
-
-            Image i;
-            try {
-                i = Image.GetInstance(new Uri(path));
-            } catch (Exception ex) {
-                return ex.Message;
+                psize = embiggen ? e.MaxBy(s => s.area) : e.MinBy(s => s.area);
             }
 
-            //set page size and add a new page
-            doc.SetPageSize(new Rectangle(i.Width, i.Height));
-            doc.NewPage();
+
+            //process files
+            foreach (string file in files) {
+                Image i;
+                try {
+                    i = Image.GetInstance(new Uri(file));
+                } catch (Exception ex) {
+                    callback(false, file, ex.Message, null);
+                    continue;
+                }
 
 
-            //scale and add image
-            i.ScaleToFit(doc.PageSize.Width, doc.PageSize.Height);
-            doc.Add(i);
-            return null;
+
+                //set page size and add a new page (technically don't have to do this every time if psize isn't empty)
+                doc.SetPageSize(psize.empty ? new Rectangle(i.Width, i.Height) : new Rectangle(psize.w, psize.h));
+                doc.NewPage();
+
+
+                //scale and add image
+                if (psize.empty) {
+                    i.ScaleToFit(doc.PageSize.Width, doc.PageSize.Height);
+                } else {
+                    // see https://stackoverflow.com/questions/6565703/math-algorithm-fit-image-to-screen-retain-aspect-ratio
+                    float rp = (float)psize.w / (float)psize.h;
+                    float ri = i.Width / i.Height;
+
+                    float iw = rp > ri ? i.Width * psize.h /  i.Height : psize.w;
+                    float ih = rp > ri ? psize.h                       : i.Height * psize.w /  i.Width;
+                    i.ScaleToFit(doc.PageSize.Width, doc.PageSize.Height);
+                    i.SetAbsolutePosition((psize.w - iw)/2, (psize.h - ih)/2);
+                }
+
+                i.Alt = Path.GetFileName(file);
+                doc.Add(i);
+
+                callback(true, file, null, i);
+            }
+
+            doc.Close();
         }
 
 
-    //output helpers
-        private static void PrintWarning(string w) {
-            Konsole.WriteLine(
-                CT.N("    warn: ", CC.YELLOW),
-                CT.N(w, CC.GRAY)
-            );
-        }
-
-        private static void PrintAdd(string file, string curpath) {
-            Konsole.WriteLine(
-                CT.N("    add:  ", CC.GREEN),
-                CT.N(file.RemoveFromStart(curpath), CC.GRAY)
-            );
+    //output
+        private void FileCallback(bool success, string file, string message, Image image) {
+            if (success) {
+                Konsole.WriteLine(
+                    CT.N("    add:  ", CC.GREEN),
+                    CT.N(file.RemoveFromStart(basepath), CC.GRAY)
+                );
+            } else {
+                Konsole.WriteLine(
+                    CT.N("    warn: ", CC.YELLOW),
+                    CT.N(message, CC.GRAY)
+                );
+            }
         }
     }
 }
