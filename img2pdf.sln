@@ -5,35 +5,39 @@ VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "katbyte.dll", "references\katbyte.dll\katbyte.dll.csproj", "{2A6B6174-0707-1987-0707-627974650000}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "img2pdf", "img2pdf.csproj", "{2A6B6174-7777-1987-7777-627974650001}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "img2pdf", "img2pdf\img2pdf.csproj", "{2A6B6174-7777-1987-7777-627974650001}"
 	ProjectSection(ProjectDependencies) = postProject
 		{2A6B6174-0707-1987-0707-627974650000} = {2A6B6174-0707-1987-0707-627974650000}
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "solution", "solution", "{34F35763-EAA4-4FEE-B048-ADE5EA50CBAE}"
+	ProjectSection(SolutionItems) = preProject
+		.version = .version
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "img2pdfDrop", "img2pdfDrop\img2pdfDrop.csproj", "{31B212BE-36C2-4923-A5B5-9E850EBF5011}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2A6B6174-7777-1987-7777-627974650001} = {2A6B6174-7777-1987-7777-627974650001}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		3.5.debug|Any CPU = 3.5.debug|Any CPU
-		3.5.release|Any CPU = 3.5.release|Any CPU
-		4.5.debug|Any CPU = 4.5.debug|Any CPU
-		4.5.release|Any CPU = 4.5.release|Any CPU
+		debug|Any CPU = debug|Any CPU
+		release|Any CPU = release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{2A6B6174-0707-1987-0707-627974650000}.3.5.debug|Any CPU.ActiveCfg = 3.5.debug|Any CPU
-		{2A6B6174-0707-1987-0707-627974650000}.3.5.debug|Any CPU.Build.0 = 3.5.debug|Any CPU
-		{2A6B6174-0707-1987-0707-627974650000}.3.5.release|Any CPU.ActiveCfg = 3.5.release|Any CPU
-		{2A6B6174-0707-1987-0707-627974650000}.3.5.release|Any CPU.Build.0 = 3.5.release|Any CPU
-		{2A6B6174-0707-1987-0707-627974650000}.4.5.debug|Any CPU.ActiveCfg = 4.5.debug|Any CPU
-		{2A6B6174-0707-1987-0707-627974650000}.4.5.debug|Any CPU.Build.0 = 4.5.debug|Any CPU
-		{2A6B6174-0707-1987-0707-627974650000}.4.5.release|Any CPU.ActiveCfg = 4.5.release|Any CPU
-		{2A6B6174-0707-1987-0707-627974650000}.4.5.release|Any CPU.Build.0 = 4.5.release|Any CPU
-		{2A6B6174-7777-1987-7777-627974650001}.3.5.debug|Any CPU.ActiveCfg = 3.5.debug|Any CPU
-		{2A6B6174-7777-1987-7777-627974650001}.3.5.debug|Any CPU.Build.0 = 3.5.debug|Any CPU
-		{2A6B6174-7777-1987-7777-627974650001}.3.5.release|Any CPU.ActiveCfg = 3.5.release|Any CPU
-		{2A6B6174-7777-1987-7777-627974650001}.3.5.release|Any CPU.Build.0 = 3.5.release|Any CPU
-		{2A6B6174-7777-1987-7777-627974650001}.4.5.debug|Any CPU.ActiveCfg = 4.5.debug|Any CPU
-		{2A6B6174-7777-1987-7777-627974650001}.4.5.debug|Any CPU.Build.0 = 4.5.debug|Any CPU
-		{2A6B6174-7777-1987-7777-627974650001}.4.5.release|Any CPU.ActiveCfg = 4.5.release|Any CPU
-		{2A6B6174-7777-1987-7777-627974650001}.4.5.release|Any CPU.Build.0 = 4.5.release|Any CPU
+		{2A6B6174-0707-1987-0707-627974650000}.debug|Any CPU.ActiveCfg = debug|Any CPU
+		{2A6B6174-0707-1987-0707-627974650000}.debug|Any CPU.Build.0 = debug|Any CPU
+		{2A6B6174-0707-1987-0707-627974650000}.release|Any CPU.ActiveCfg = release|Any CPU
+		{2A6B6174-0707-1987-0707-627974650000}.release|Any CPU.Build.0 = release|Any CPU
+		{2A6B6174-7777-1987-7777-627974650001}.debug|Any CPU.ActiveCfg = debug|Any CPU
+		{2A6B6174-7777-1987-7777-627974650001}.debug|Any CPU.Build.0 = debug|Any CPU
+		{2A6B6174-7777-1987-7777-627974650001}.release|Any CPU.ActiveCfg = release|Any CPU
+		{2A6B6174-7777-1987-7777-627974650001}.release|Any CPU.Build.0 = release|Any CPU
+		{31B212BE-36C2-4923-A5B5-9E850EBF5011}.debug|Any CPU.ActiveCfg = debug|Any CPU
+		{31B212BE-36C2-4923-A5B5-9E850EBF5011}.debug|Any CPU.Build.0 = debug|Any CPU
+		{31B212BE-36C2-4923-A5B5-9E850EBF5011}.release|Any CPU.ActiveCfg = release|Any CPU
+		{31B212BE-36C2-4923-A5B5-9E850EBF5011}.release|Any CPU.Build.0 = release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

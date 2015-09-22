@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <ProjectGuid>{31B212BE-36C2-4923-A5B5-9E850EBF5011}</ProjectGuid>
+    <RootNamespace>img2pdfDrop</RootNamespace>
+    <AssemblyName>img2pdfDrop</AssemblyName>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>properties</AppDesignerFolder>
+    <StartupObject>katbyte.img2pdfDrop.Program</StartupObject>
+    <VersionLocation>../.version</VersionLocation>
+  </PropertyGroup>
+  <Import Project="..\.build\katbyte.properties" />
+  <PropertyGroup>
+    <DocumentationFile>$(OutputPath)\img2pdfDrop.xml</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="itextsharp">
+      <HintPath>..\references\itextsharp\itextsharp.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\references\katbyte.dll\katbyte.dll.csproj">
+      <Project>{2A6B6174-0707-1987-0707-627974650000}</Project>
+      <Name>katbyte.dll</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\img2pdf\img2pdf.csproj">
+      <Name>img2pdf</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="code\util\Extend_MenuItem.cs" />
+    <Compile Include="forms\Img2PdfDropForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="forms\Img2PdfDropForm.Designer.cs">
+      <DependentUpon>Img2PdfDropForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="code\Program.cs" />
+    <Compile Include="properties\AssemblyInfo.cs" />
+    <Compile Include="properties\AssemblyVersion.cs" />
+    <Compile Include="properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="forms\Img2PdfDropForm.resx">
+      <DependentUpon>Img2PdfDropForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="bg.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\.build\katbyte.targets.versioning" />
+  <Import Project="..\.build\katbyte.targets.use.lib" />
+</Project>

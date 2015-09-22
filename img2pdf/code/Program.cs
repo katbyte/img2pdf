@@ -38,7 +38,7 @@ using katbyte.utility;
 
 namespace katbyte.img2pdf {
 
-    sealed partial class Img2Pdf : KonsoleProgram {
+    sealed partial class Program : KonsoleProgram {
 
     //constants
         private static string appname  = "img2pdf";
@@ -52,7 +52,7 @@ namespace katbyte.img2pdf {
 
         //program entry point, create new program and start
         static void Main(string[] args) {
-            new Img2Pdf().Start(args);
+            new Program().Start(args);
         }
 
 
@@ -70,9 +70,7 @@ namespace katbyte.img2pdf {
         private bool ensmallen;
         private bool embiggen;
 
-        //keep track of if files/folders are found to determine "mode"
-        private bool inputFolders;
-        private bool inputFiles;
+
 
         //private KSize pageSize;
 
@@ -112,7 +110,7 @@ namespace katbyte.img2pdf {
                         CT.N(Path.GetFileName(pdf), CC.WHITE)
                     );
 
-                    var files = KPath.GetAllFiles(paths);
+                    var files = KPath.GetAllFiles(path);
                     CreatePdfFromFiles(path + ".pdf", files, FileCallback);
                     Konsole.WriteLine(CT.N("    finished!", CC.GREEN));
                     Konsole.WriteLine();
@@ -167,7 +165,9 @@ namespace katbyte.img2pdf {
             //temp list to collect inputs
             var inputsList = new List<string>();
 
-
+            //keep track of if files/folders are found to determine "mode"
+            bool inputFolders = false;
+            bool inputFiles   = false;
 
             //parse command line
             var argq = args.ToQueue(); //using a queue so we can easily grab the next arg at any point
@@ -319,7 +319,7 @@ namespace katbyte.img2pdf {
             KSize psize = new KSize();
             if (ensmallen || embiggen) {
 
-                var e = KPath.GetAllFiles(paths).Select(file => {
+                var e = files.Select(file => {
                     var i = Image.GetInstance(new Uri(file));
                     return new KSize((int) i.Width, (int) i.Height);
                 });

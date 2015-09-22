@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 
 
 //static assembly properties:
-[assembly: AssemblyTitle        ("katbyte")]
+[assembly: AssemblyTitle        ("img2pdf")]
 [assembly: AssemblyDescription  ("Simple utility to create pdfs from images.")]
 [assembly: AssemblyProduct      ("img2pdf")]
 

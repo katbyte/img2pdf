@@ -5,7 +5,7 @@ using katbyte.console;
 
 namespace katbyte.img2pdf {
 
-    sealed partial class Img2Pdf : KonsoleProgram {
+    sealed partial class Program : KonsoleProgram {
 
         public static class Help {
 
