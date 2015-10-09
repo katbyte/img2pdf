@@ -2,17 +2,13 @@
 using System;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Diagnostics;
 using System.Collections.Generic;
 
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 
 using katbyte.extend;
-using katbyte.console;
 using katbyte.data;
-using katbyte.utility;
 
 
 
@@ -21,28 +17,15 @@ namespace katbyte.img2pdf {
     /// <summary>
     /// Img2Pdf converter
     /// </summary>
-    sealed public partial class Img2Pdf {
+    public static class Img2Pdf {
 
         private static string appname = "img2pdf";
         private static string homepage = "https://github.com/katbyte/cs.img2pdf";
 
-        //options
-
-        //switches
-        /// <summary>
-        /// causes page size to be set to smallest image
-        /// </summary>
-        public bool ensmallen = false;
-
-        /// <summary>
-        /// causes page size to be set to largest image
-        /// </summary>
-        public bool embiggen = false;
-
         /// <summary>
         /// creates a PDF at path for the given files, for each file callback(success, file, message, Image) will be called
         /// </summary>
-        public void CreatePdfFromFiles(string path, IEnumerable<string> filese, Action<bool, string, string, Image> callback = null) {
+        public static void CreatePdfFromFiles(string path, IEnumerable<string> filese, Action<bool, string, string, Image> callback = null, bool ensmallen = false, bool embiggen = false) {
 
             var files = filese.ToArray();
 

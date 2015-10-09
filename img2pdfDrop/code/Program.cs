@@ -4,7 +4,7 @@ using System.Windows.Forms;
 
 
 
-namespace katbyte.img2pdfDrop {
+namespace katbyte.img2pdf.drop {
 
     static class Program {
 

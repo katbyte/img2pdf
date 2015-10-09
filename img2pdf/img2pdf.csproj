@@ -27,6 +27,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="code\IImg2PdfOptions.cs" />
+    <Compile Include="code\Img2PdfJob.cs" />
     <Compile Include="code\Img2Pdf.cs" />
     <Compile Include="code\Program.Help.cs" />
     <Compile Include="code\Program.cs" />

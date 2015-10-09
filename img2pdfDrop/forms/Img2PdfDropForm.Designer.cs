@@ -1,4 +1,4 @@
-﻿namespace katbyte.img2pdfDrop {
+﻿namespace katbyte.img2pdf.drop {
     partial class Img2PdfDropForm {
         /// <summary>
         /// Required designer variable.
@@ -57,7 +57,7 @@
             this.lbl_queue.ForeColor = System.Drawing.SystemColors.AppWorkspace;
             this.lbl_queue.Location = new System.Drawing.Point(0, 20);
             this.lbl_queue.Name = "lbl_queue";
-            this.lbl_queue.Size = new System.Drawing.Size(170, 115);
+            this.lbl_queue.Size = new System.Drawing.Size(1977, 115);
             this.lbl_queue.TabIndex = 5;
             this.lbl_queue.Text = "queue";
             this.lbl_queue.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
@@ -70,7 +70,7 @@
             this.lbl_draghere.Name = "lbl_draghere";
             this.lbl_draghere.Size = new System.Drawing.Size(170, 24);
             this.lbl_draghere.TabIndex = 6;
-            this.lbl_draghere.Text = "Drop Folders Here";
+            this.lbl_draghere.Text = "Drag Folders Here";
             this.lbl_draghere.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // Img2PdfDropForm
@@ -87,6 +87,7 @@
             this.Controls.Add(this.lbl_queueprocess);
             this.Controls.Add(this.lbl_jobprocess);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "Img2PdfDropForm";

@@ -12,7 +12,7 @@ namespace katbyte.winforms {
 
 
         /// <summary>
-        /// inverts a menuitems check
+        /// inverts a menu-items check
         /// </summary>
         public static void CheckedMenuItemClicked (this MenuItem mi) {
             mi.Checked = ! mi.Checked;
