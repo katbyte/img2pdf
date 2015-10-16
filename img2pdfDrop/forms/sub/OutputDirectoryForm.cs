@@ -12,7 +12,7 @@ namespace katbyte.img2pdf.drop {
     /// <summary>
     /// img2pdfDrop output outputDirectory options form
     /// </summary>
-    public partial class OutputDirectoryForm : Form { 
+    public partial class OutputDirectoryForm : Form {
 
 
     //properties and fields
@@ -60,7 +60,7 @@ namespace katbyte.img2pdf.drop {
 
 
 
-    //button actions
+    //actions
         private void btn_ok_Click(object sender, EventArgs e = null) {
             if (rb_inputDir.Checked) {
                 //null sets it to input
@@ -90,6 +90,18 @@ namespace katbyte.img2pdf.drop {
                 txt_outputPath.Text = dialog.SelectedPath;
             }
         }
+
+
+        //close on esc key press
+        #pragma warning disable 1591
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData) {
+            if (keyData == Keys.Escape) {
+                Close();
+                return true;
+            }
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+        #pragma warning restore 1591
 
 
 

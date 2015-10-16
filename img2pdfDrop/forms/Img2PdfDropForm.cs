@@ -6,7 +6,6 @@ using System.Threading;
 using System.Diagnostics;
 using System.Windows.Forms;
 using System.Collections.Concurrent;
-using System.Drawing;
 
 using katbyte.data;
 using katbyte.extend;
@@ -19,20 +18,17 @@ using Timer = System.Windows.Forms.Timer;
 
 //TODO:
 // menu:
-//  - about (link to github, copyright notice, inspired by lamedrop)
 //  - set page size
 // log window?
 // log file
-// edit background image to be nicer, add text?
+
 // save settings to ini/reg
 // notifications ?
 
-//cbr cbz
-//icon (www.fiverr.com?)
+// cbr cbz
 // rotating/pulsing  icon
-// about form build info
-// esc closes about/dialog forms
-
+// edit background image to be nicer, add text? add image?
+// icon (www.fiverr.com?)
 
 
 namespace katbyte.img2pdf.drop {
@@ -136,13 +132,15 @@ namespace katbyte.img2pdf.drop {
                     return;
                 }
 
-                (new Thread(() => {
-                    if (MessageBox.Show("Images are currently being processed, exit anyways?", "Warning!", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button2) == DialogResult.Yes) {
-                        //quick and dirty, but probably not optimal
-                        workerThread.Abort();
-                        Application.Exit();
+
+                if (MessageBox.Show(this, "Images are currently being processed, exit anyways?", "Warning!", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button2) == DialogResult.Yes) {
+                    //quick and dirty, but probably not optimal
+                    if (workerThread.IsNotNullAndAlive()) {
+                        workerThread.Abort(); //this is bad bad bad, TODO be better then this.
                     }
-                })).Start();
+                    Application.Exit();
+                }
+
 
             }, Shortcut.AltF4));
 
